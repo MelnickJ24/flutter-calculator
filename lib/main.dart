@@ -40,6 +40,18 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         _result = '';
       } else if (value == '=') {
         _evaluateExpression();
+      } else if (value == 'x²') {
+        // Square the last result or current input
+        try {
+          final target = _result.isNotEmpty ? _result : _expression;
+          if (target.isEmpty) return;
+          final numVal = double.parse(target);
+          final squared = numVal * numVal;
+          _expression = '$target²';
+          _result = squared.toString();
+        } catch (e) {
+          _result = 'Error';
+        }
       } else {
         _expression += value;
       }
@@ -48,7 +60,7 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
 
   void _evaluateExpression() {
     try {
-      // Replace the “x” symbol if used for multiplication
+      // Replace 'x' with '*' for multiplication
       final sanitized = _expression.replaceAll('x', '*');
       final expression = Expression.parse(sanitized);
       const evaluator = ExpressionEvaluator();
@@ -111,7 +123,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   Text(
                     _expression,
                     style: const TextStyle(
-                        color: Colors.white, fontSize: 28, fontWeight: FontWeight.w400),
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w400),
                   ),
                   const SizedBox(height: 10),
                   Text(
@@ -166,6 +180,11 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                     children: [
                       _buildButton('C', color: Colors.redAccent),
                       _buildButton('=', color: Colors.green),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      _buildButton('x²', color: Colors.blueAccent),
                     ],
                   ),
                 ],
